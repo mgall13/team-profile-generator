@@ -18,7 +18,6 @@ test('testing github class', () => {
     expect(engineer.github).toBe(github);
 });
 
-
 // testing methods
 test('testing getGithub method', () => {
     const github = 'mgall13'
