@@ -1,41 +1,15 @@
-const generateHTML = require('./src/generateHTML')
+const createTeam = require('./src/createTeam')
 const inquirer = require("inquirer");
 const fs = require("fs");
-const path = require("path");
+const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const Manager = require("./lib/Manager");
+const creatingCards = require('./src/createTeam');
 
+// creating empty array to hold out team data
 const teamArray = [];
 
-// creating function to call at the end of each questionair
-function createTeam() {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        message: "What type of employee will you be adding?",
-        name: "addEmployee",
-        choices: ["Manager", "Engineer", "Intern", "Team is complete!"],
-      },
-    ])
-    .then((userInput) => {
-      switch (userInput.addEmployee) {
-        case "Manager":
-          addManager();
-          break;
-        case "Engineer":
-          addEngineer();
-          break;
-        case "Intern":
-          addIntern();
-          break;
-        case "Team is complete!":
-          return console.log(teamArray);
-      }
-    });
-};
-
+// initializing question prompts
 function addManager() {
   inquirer
     .prompt([
@@ -91,16 +65,32 @@ function addManager() {
           }
         }
       },
+      // initiliazing next employee prompts
+      {
+        type: 'list',
+        name: 'addTeammate',
+        message: 'What type of team member would you like to add next?',
+        choices: ['Engineer', 'Intern', "That completes my team!"],
+      }
     ])
-    .then((data) => {
+    .then((managerAnswers) => {
       const manager = new Manager(
-        data.managerName,
-        data.managerId,
-        data.managerEmail,
-        data.officeNumber
-      );
+        managerAnswers.managerName,
+        managerAnswers.managerId,
+        managerAnswers.managerEmail,
+        managerAnswers.officeNumber
+      )
       teamArray.push(manager);
-      createTeam();
+      switch(managerAnswers.addTeammate) {
+        case 'Engineer':
+          addEngineer();
+          break;
+        case 'Intern':
+          addIntern();
+          break;
+        default: 
+        writeToFile('./dist/index.html', createTeam(teamArray))
+      }
     });
 };
 
@@ -151,16 +141,32 @@ function addEngineer() {
         name: "gitHub",
         message: "What is your engineer's GitHub username?",
       },
+      // calling for next employee
+      {
+        type: 'list',
+        name: 'addTeammate',
+        message: 'What type of team member would you like to add next?',
+        choices: ['Engineer', 'Intern', "That completes my team!"],
+      }
     ])
-    .then((data) => {
+    .then((engineerAnswers) => {
       const engineer = new Engineer(
-        data.engineerName,
-        data.engineerId,
-        data.engineerEmail,
-        data.gitHub
+        engineerAnswers.engineerName,
+        engineerAnswers.engineerId,
+        engineerAnswers.engineerEmail,
+        engineerAnswers.gitHub
       );
       teamArray.push(engineer);
-      createTeam();
+      switch(engineerAnswers.addTeammate) {
+        case 'Engineer':
+          addEngineer();
+          break;
+        case 'Intern':
+          addIntern();
+          break;
+        default:
+          writeToFile('./dist/index.html', createTeam(teamArray))
+      }
     });
 };
 
@@ -211,30 +217,45 @@ function addIntern() {
         name: "school",
         message: "What school is your intern currently attending?",
       },
+      // calling for next employee
+      {
+        type: 'list',
+        name: 'addTeammate',
+        message: 'What type of team member would you like to add next?',
+        choices: ['Engineer', 'Intern', "That completes my team!"],
+      }
     ])
-    .then((data) => {
+    .then((internAnswers) => {
       const intern = new Intern(
-        data.internName,
-        data.internId,
-        data.internEmail,
-        data.school
+        internAnswers.internName,
+        internAnswers.internId,
+        internAnswers.internEmail,
+        internAnswers.school
       );
       teamArray.push(intern);
-      createTeam();
+      switch(internAnswers.addTeammate) {
+        case 'Engineer':
+          addEngineer();
+          break;
+        case 'Intern':
+          addIntern();
+          break;
+        default:
+          writeToFile('./dist/index.html', createTeam(teamArray))
+      }
   });
 };
 
-const writeFile = data => {
+const writeToFile = data => {
   fs.writeFile('./dist/index.html', data, err => {
     if (err) {
       console.log(err);
       return;
     } else {
-      console.log('Success! Your Team Profile is now being generated!');
+      console.log("Congrats! Your team has been generated, check out index.html!")
     }
-  });
+  })
 };
 
 // send to inquirer directory:
-// What do you want to do next? - add Engineer, add Intern, done adding employees
-createTeam();
+addManager()
