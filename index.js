@@ -4,7 +4,6 @@ const fs = require("fs");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const creatingCards = require('./src/createTeam');
 
 // creating empty array to hold out team data
 const teamArray = [];
@@ -89,7 +88,7 @@ function addManager() {
           addIntern();
           break;
         default: 
-          writeToFile('./dist/index.html', creatingCards(teamArray))
+          writeToFile('./dist/index.html', createTeam(teamArray))
       }
     });
 };
@@ -165,7 +164,7 @@ function addEngineer() {
           addIntern();
           break;
         default:
-          writeToFile('./dist/index.html', creatingCards(teamArray))
+          writeToFile('./dist/index.html', createTeam(teamArray))
       }
     });
 };
@@ -241,7 +240,7 @@ function addIntern() {
           addIntern();
           break;
         default:
-          writeToFile('./dist/index.html', creatingCards(teamArray))
+          writeToFile('./dist/index.html', createTeam(teamArray))
       }
   });
 };
