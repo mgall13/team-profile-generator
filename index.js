@@ -89,7 +89,7 @@ function addManager() {
           addIntern();
           break;
         default: 
-        writeToFile('./dist/index.html', createTeam(teamArray))
+          writeToFile('./dist/index.html', creatingCards(teamArray))
       }
     });
 };
@@ -165,7 +165,7 @@ function addEngineer() {
           addIntern();
           break;
         default:
-          writeToFile('./dist/index.html', createTeam(teamArray))
+          writeToFile('./dist/index.html', creatingCards(teamArray))
       }
     });
 };
@@ -241,20 +241,18 @@ function addIntern() {
           addIntern();
           break;
         default:
-          writeToFile('./dist/index.html', createTeam(teamArray))
+          writeToFile('./dist/index.html', creatingCards(teamArray))
       }
   });
 };
 
-const writeToFile = data => {
-  fs.writeFile('./dist/index.html', data, err => {
+function writeToFile(filename, data) {
+  fs.writeFile(filename, data, (err) => {
     if (err) {
-      console.log(err);
-      return;
-    } else {
-      console.log("Congrats! Your team has been generated, check out index.html!")
-    }
-  })
+      throw err;
+    } else 
+    console.log('Your team is now being generated!')
+  });
 };
 
 // send to inquirer directory:
